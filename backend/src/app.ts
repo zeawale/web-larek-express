@@ -8,6 +8,7 @@ import productRouter from './routes/product';
 import errorHandler from './middlewares/error';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import orderRouter from './routes/order';
+import NotFoundError from './errors/not-found-error';
 
 const app = express();
 
@@ -20,8 +21,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use('/product', productRouter);
 app.use('/order', orderRouter);
 
-app.use('*', (_req, res) => {
-  res.status(404).send({ message: 'Route not found' });
+app.use('*', (_req, _res, next) => {
+  next(new NotFoundError('Маршрут не найден'));
 });
 
 app.use(errorLogger);
